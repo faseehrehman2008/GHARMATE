@@ -1,0 +1,22 @@
+{% extends "base.html" %}{% block content %}
+<div class="welcome"><div><div class="eyebrow">FAMILY HOME HUB</div><h1>Assalam-o-Alaikum, {{ current_name }}!</h1><p>Here is what's happening at home today · {{ today.strftime('%A, %d %B %Y') }}</p></div><div class="avatar">{{ current_name[:1]|upper }}</div></div>
+<div class="tiles">
+<a class="tile" href="{{ url_for('timetable') }}"><b>◷</b><strong>Daily timetable</strong><span>Shared routines</span></a>
+<a class="tile" href="{{ url_for('chores') }}"><b>✓</b><strong>Household chores</strong><span>Tasks and smart rotation</span></a>
+<a class="tile" href="{{ url_for('calendar') }}"><b>▦</b><strong>Family calendar</strong><span>Birthdays and events</span></a>
+<a class="tile" href="{{ url_for('prayers') }}"><b>☾</b><strong>Prayer times</strong><span>Daily prayer schedule</span></a>
+<a class="tile" href="{{ url_for('polls') }}"><b>☑</b><strong>Family polls</strong><span>Vote together</span></a>
+<a class="tile" href="{{ url_for('outings') }}"><b>↗</b><strong>Outing tracker</strong><span>Who is away</span></a>
+<a class="tile" href="{{ url_for('emergency') }}"><b>✚</b><strong>Emergency center</strong><span>Quick contacts</span></a>
+<a class="tile" href="{{ url_for('visitors') }}"><b>♧</b><strong>Visitor register</strong><span>Guest log</span></a>
+<a class="tile" href="{{ url_for('assistant') }}"><b>✦</b><strong>Family assistant</strong><span>Ask household questions</span></a>
+<a class="tile" href="{{ url_for('announcements') }}"><b>▤</b><strong>Announcements</strong><span>Family noticeboard</span></a>
+</div>
+<div class="columns">
+<section class="card"><div class="section-head"><h2>Upcoming chores</h2><a href="{{ url_for('chores') }}">View all →</a></div>{% for c in chores %}<div class="item"><div><strong>{{ c.title }}</strong><small>Assigned to: {{ c.member_name or 'Unassigned' }} · Due: {{ c.due_date or 'Not set' }}</small></div><span class="status">{{ 'Done' if c.done else 'Pending' }}</span></div>{% else %}<p class="muted">No chores added yet.</p>{% endfor %}</section>
+<section class="card"><div class="section-head"><h2>Family events</h2><a href="{{ url_for('calendar') }}">View all →</a></div>{% for e in events %}<div class="item"><div><strong>{{ e.title }}</strong><small>{{ e.event_date }} {{ e.event_time or '' }}</small></div></div>{% else %}<p class="muted">No events planned.</p>{% endfor %}</section>
+<section class="card"><div class="section-head"><h2>Announcements</h2><a href="{{ url_for('announcements') }}">View all →</a></div>{% for a in announcements %}<div class="item"><div><strong>{{ a.title }}</strong><small>{{ a.message }} · By {{ a.author }}</small></div></div>{% else %}<p class="muted">No announcements yet.</p>{% endfor %}</section>
+<section class="card"><div class="section-head"><h2>Family members</h2>{% if session.get('role')=='admin' %}<a href="{{ url_for('family') }}">Manage →</a>{% endif %}</div><div class="member-list">{% for m in members %}<span class="member-chip"><i>{{ m.name[:1]|upper }}</i>{{ m.name }}</span>{% endfor %}</div></section>
+<section class="card"><div class="section-head"><h2>Family members currently away</h2><a href="{{ url_for('outings') }}">Outing register →</a></div>{% for a in away %}<div class="item"><div><strong>{{ a.member_name }} · {{ a.destination }}</strong><small>Expected return: {{ a.expected_return_at or 'Not set' }}</small></div></div>{% else %}<p class="muted">No one is currently marked away.</p>{% endfor %}</section>
+<section class="card"><div class="section-head"><h2>Open family polls</h2><a href="{{ url_for('polls') }}">Vote →</a></div>{% for p in open_polls %}<div class="item"><strong>{{ p.question }}</strong></div>{% else %}<p class="muted">No open polls.</p>{% endfor %}</section>
+</div>{% endblock %}
